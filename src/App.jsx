@@ -6,8 +6,7 @@ function App() {
   
   return(
 <Routes>
-  <Route path='/' element={<h1>Hello world</h1>}/>
-  <Route path='home' element={<Main/>}/>
+  <Route path='/home' element={<Main/>}/>
   <Route path="post" element={<PostAd/>}/>
   <Route path="postad" element={<PostAttributes/>}/>
 </Routes>
