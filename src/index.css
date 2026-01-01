@@ -1,0 +1,16 @@
+@import "tailwindcss";
+ /* index.css ya App.css mein yeh code add karein */
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); } /* Currency list ko 50% left mein move karega */
+}
+
+.animate-marquee {
+  animation: marquee 35s linear infinite; /* Speed aur duration aap badal sakte hain */
+}
+
+.marquee-container {
+  overflow: hidden; /* Zaroori, taaki currency list bahar na dikhe */
+  white-space: nowrap; /* Zaroori, taaki currency list ek hi line mein rahe */
+}
