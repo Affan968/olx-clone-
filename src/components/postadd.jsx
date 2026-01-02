@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router';
 import mobile from './logo/Mobiles.png';
 import Vehicles from './logo/vehicles.png';
 import Property from './logo/property.png';
-import Property2 from './logo/Property2.png';
+import Propertytwo from './logo/Propertytwo.png';
 import Electronic from './logo/electronics-home-appliances.png';
 import Bikes from './logo/bikes.png';
 import business from './logo/business-Industrial-agriculture.png';
@@ -21,7 +21,7 @@ const categories = [
   { id: 1, name: 'Mobiles', icon: mobile },
   { id: 2, name: 'Vehicles', icon: Vehicles },
   { id: 3, name: 'Property for Sale', icon: Property },
-  { id: 4, name: 'Property for Rent', icon: Property2 },
+  { id: 4, name: 'Property for Rent', icon: Propertytwo },
   { id: 5, name: 'Electronics & Home Appliances', icon: Electronic },
   { id: 6, name: 'Bikes', icon: Bikes },
   { id: 7, name: 'Business, Industrial & Agriculture', icon: business },
