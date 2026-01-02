@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router';
 import mobile from './logo/Mobiles.png';
 import Vehicles from './logo/vehicles.png';
 import Property from './logo/property.png';
-import Propertytwo from './logo/Propertytwo.png';
+import Propertytwo from './logo/propertytwo.png';
 import Electronic from './logo/electronics-home-appliances.png';
 import Bikes from './logo/bikes.png';
 import business from './logo/business-Industrial-agriculture.png';
