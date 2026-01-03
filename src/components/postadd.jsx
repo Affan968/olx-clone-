@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
-import { CateogaryContext} from './context.jsx'; // Context Variable import
+import { CateogaryContext} from './context.jsx'; 
 import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate } from 'react-router';
-import mobile from './logo/Mobiles.png';
-import Vehicles from './logo/vehicles.png';
-import Property from './logo/property.png';
+
+// In paths ko dhyan se dekho, ye tumhare folder se match kar rahe hain
+import mobile from './logo/Mobiles.png'; // M capital as per sidebar
+import Vehicles from './logo/vehicles.png'; // v small as per sidebar
+import Property from './logo/property.png'; // p small as per sidebar
 import Propertytwo from './logo/propertytwo.png';
 import Electronic from './logo/electronics-home-appliances.png';
 import Bikes from './logo/bikes.png';
@@ -35,16 +37,13 @@ const categories = [
 ];
 
 export default function PostAd() {
-  // Yahan useContext mein CateogaryContext pass kiya hai
-const contextData = useContext(CateogaryContext);  
-const {CategoriesImage,setCategoriesImage}=contextData
+  const contextData = useContext(CateogaryContext);  
+  const {CategoriesImage, setCategoriesImage} = contextData;
   const navigate = useNavigate();
 
   const handlesubmit = (cat) => {
-    console.log(cat,"cat")
-    setCategoriesImage(cat); // Poora object context mein set ho gaya
-    navigate("/postad"); // Apne route ka sahi naam yahan likhen
-    console.log(CategoriesImage,"image")
+    setCategoriesImage(cat);
+    navigate("/postad");
   };
 
   return (
