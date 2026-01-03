@@ -8,7 +8,7 @@ import Property from './logo/property.png';
 import Propertytwo from './logo/propertytwo.png';
 import Electronic from './logo/electronics-home-appliances.png';
 import Bikes from './logo/bikes.png';
-import business from './logo/business-Industrial-agriculture.png';
+import business from './logo/business-industrial-agriculture.png';
 import Services from './logo/services.png';
 import Jobs from './logo/jobs.png';
 import Animals from './logo/animals.png';
