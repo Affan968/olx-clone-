@@ -1,0 +1,192 @@
+
+
+import React, { useState } from 'react';
+import { XMarkIcon, ChevronLeftIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router';
+import { auth, createUserWithEmailAndPassword } from './firebaseconfig/index.jsx';
+
+function SignupModal() {
+    const navigate = useNavigate();
+    const [step, setStep] = useState(1); // 1: Join, 2: Email, 3: Password, 4: Phone
+    const [email, setEmail] = useState("");
+    const [phoneNumber, setphoneNumber] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    const handleClose = () => navigate('/home');
+    
+ const handleSubmit = () => {
+        if (!email || !password) {
+            alert("Please fill all fields");
+            return;
+        }
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log(user, "user has been saved on firebase");
+                navigate('/home'); // Success ke baad home bhej do
+            })
+            .catch((error) => {
+                console.error("Error code:", error.code);
+                alert(error.message);
+            });
+    };
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-[2px] font-sans p-4"
+        >
+
+            {/* --- MAIN CONTAINER: Height aur Width fixed kar di hai --- */}
+            <div className="relative w-full max-w-[400px] bg-white rounded-md shadow-xl flex flex-col h-[530px] overflow-hidden">
+
+                {/* --- FIXED HEADER: X aur Back buttons scroll nahi honge --- */}
+                <div className="flex justify-between items-center p-2 bg-white z-20">
+                    <div className="w-8">
+                        {step > 1 && (
+                            <button
+                                onClick={() => setStep(step === 4 ? 1 : (step === 3 && phoneNumber ? 4 : step - 1))}
+                                className="text-[#002f34] hover:bg-gray-100 p-1 rounded-full transition cursor-pointer"
+                            >
+                                <ChevronLeftIcon className="h-6 w-6 stroke-2" />
+                            </button>
+                        )}
+                    </div>
+                    <button onClick={handleClose} className="text-[#002f34] hover:bg-gray-100 p-1 rounded-full transition cursor-pointer">
+                        <XMarkIcon className="h-6 w-6 stroke-2" />
+                    </button>
+                </div>
+
+                {/* --- SCROLLABLE BODY: Saari logic yahan hai --- */}
+                <div className="flex-grow overflow-y-scroll px-8 custom-olx-scrollbar">
+
+                    {/* STEP 1: INITIAL JOIN OPTIONS */}
+                    {step === 1 && (
+                        <div className="flex flex-col animate-in fade-in duration-300">
+                            <div className="flex justify-center mb-1">
+                                <svg className="h-[80px] w-[80px] text-[#002f34]" fill="currentColor" viewBox="0 0 36.289 20.768">
+                                    <path d="M18.9 20.77V0h4.93v20.77zM0 10.39a8.56 8.56 0 1 1 8.56 8.56A8.56 8.56 0 0 1 0 10.4zm5.97-.01a2.6 2.6 0 1 0 2.6-2.6 2.6 2.6 0 0 0-2.6 2.6zm27 5.2l-1.88-1.87-1.87 1.88H25.9V12.3l1.9-1.9-1.9-1.89V5.18h3.27l1.92 1.92 1.93-1.92h3.27v3.33l-1.9 1.9 1.9 1.9v3.27z"></path>
+                                </svg>
+                            </div>
+
+                            <h2 className="text-center text-[25px] font-semiboldtext-[#002f34] mb-8 leading-tight">
+                                Create a new OLX account
+                            </h2>
+
+                            <div className="space-y-3">
+                                {/* Google Button */}
+                                <button className="w-full flex items-center border-1 border-[#002f34] py-3 px-19 rounded-md font-bold text-[#002f34] bg-white cursor-pointer hover:bg-gray-50 transition-all  hover:ring-[2.5px] hover:ring-[#002f34] transition-all">
+                                    <img src="https://www.svgrepo.com/show/355037/google.svg" className="h-6 w-6" alt="google" />
+                                    <span className="flex-grow text-center text-[15px]">Join with Google</span>
+                                </button>
+
+                                {/* Facebook Button */}
+                                <button className="w-full flex items-center border-1 border-[#002f34] py-3 px-18 rounded-md font-bold text-[#002f34] bg-white cursor-pointer hover:bg-gray-50 transition-all  hover:ring-[2.5px] hover:ring-[#002f34] transition-all">
+                                    <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" className="h-6 w-6 rounded-xl items-center justify-center" alt="Facebook" />
+                                    <span className="flex-grow text-center text-[15px]">Join with Facebook</span>
+                                </button>
+
+                                <div className="flex items-center gap-2 my-4">
+                                    <div className="flex-grow h-[1px] bg-gray-200"></div>
+                                    <span className="text-[12px] font-bold text-gray-500">OR</span>
+                                    <div className="flex-grow h-[1px] bg-gray-200"></div>
+                                </div>
+
+                                {/* Email Button */}
+                                <button onClick={() => setStep(2)} className="w-full flex items-center border-1 border-[#002f34] py-3 px-20 rounded-md font-bold text-[#002f34] bg-white cursor-pointer hover:bg-gray-50  hover:ring-[2.5px] hover:ring-[#002f34] transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                    <span className="flex-grow text-center text-[15px]">Join with Email</span>
+                                </button>
+
+                                {/* Phone Button */}
+                                <button
+                                    onClick={() => setStep(4)}
+                                    className="w-full flex items-center border-[1px] border-[#002f34] py-3 px-20 rounded-md font-bold text-[#002f34] bg-white cursor-pointer hover:bg-gray-50 hover:ring-[2.5px] hover:ring-[#002f34] transition-all"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" className="h-5 w-5">
+                                        <path fill="currentColor" fillRule="evenodd" d="M18.39 19.98A15.07 15.07 0 0 1 4.02 5.6l3.52-1.4 2.15 4.3-1.67.83v.62a6.03 6.03 0 0 0 6.02 6.02h.62l.28-.56.56-1.1 4.3 2.14-1.41 3.52zm3.13-4.9l-6.02-3.01-1.35.45-.7 1.4a4.02 4.02 0 0 1-3.38-3.37l1.41-.7.45-1.35-3.01-6.02L7.65 2 2.63 4 2 4.95C2 14.34 9.65 22 19.06 22l.93-.63L22 16.35l-.48-1.27z" clipRule="evenodd"></path>
+                                    </svg>
+                                    <span className="flex-grow text-center text-[15px]">Join with phone</span>
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* STEP 2: EMAIL INPUT */}
+                    {step === 2 && (
+                        <div className="flex flex-col animate-in slide-in-from-right duration-300">
+                            <h2 className="text-center text-[24px] font-bold text-[#002f34] mb-8">Enter your email</h2>
+                            <div className="mb-6">
+                                <label className="block text-sm font-bold text-[#002f34] mb-2">Email address</label>
+                                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-4 border border-gray-300 rounded focus:border-[#002f34] outline-none" placeholder="Email" />
+                            </div>
+                            <button disabled={!email.includes("@")} onClick={() => setStep(3)} className={`w-full py-3 rounded font-bold text-white ${email.includes("@") ? 'bg-[#002f34]' : 'bg-gray-300 cursor-not-allowed'}`}>
+                                Next
+                            </button>
+                        </div>
+                    )}
+
+                    {/* STEP 4: PHONE INPUT */}
+                    {step === 4 && (
+                        <div className="flex flex-col animate-in slide-in-from-right duration-300">
+                            <h2 className="text-center text-[24px] font-bold text-[#002f34] mb-8">Enter your phone</h2>
+                            <div className="mb-6 border-2 border-[#002f34] rounded flex">
+                                <span className="p-3 border-r bg-gray-50 font-bold">+92</span>
+                                <input type="tel" value={phoneNumber} onChange={(e) => setphoneNumber(e.target.value)} className="w-full p-3 outline-none" placeholder="Phone Number" />
+                            </div>
+                            <button onClick={() => setStep(3)} className="w-full bg-[#002f34] text-white py-3 rounded font-bold">Next</button>
+                        </div>
+                    )}
+
+                    {/* STEP 3: PASSWORD */}
+                    {step === 3 && (
+                        <div className="flex flex-col animate-in slide-in-from-right duration-300">
+                            <h2 className="text-center text-[24px] font-bold text-[#002f34] mb-8">Create a password</h2>
+                            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-4 border border-gray-300 rounded mb-4 outline-none focus:border-[#002f34]" placeholder="Password" />
+                            <button onClick={handleSubmit} className="w-full bg-[#002f34] text-white py-3 rounded font-bold">Agree and Create Account</button>
+                        </div>
+                    )}
+
+                    {/* FOOTER SECTION: Scroll karne par hi poora nazar aayega */}
+                    <div className="mt-4 text-center pb-8">
+                        <p className="text-[12px] text-gray-500 leading-snug mb-8">
+                            By tapping Agree and Create Account, you agree to <span className="font-bold text-black underline cursor-pointer">Terms and conditions</span> and <span className="font-bold text-black underline cursor-pointer">Privacy Policy</span>
+                        </p>
+                        {/* Log In Link */}
+                        <button
+                            onClick={() => {
+                                console.log("Navigating...");
+                                navigate('/login');
+                            }}
+                            className="text-[#3a77ff] font-bold text-[14px] hover:underline cursor-pointer block w-full text-center"
+                        >
+                            Already have an account? Log In
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            {/* --- MOTA SCROLLBAR CSS: Bilkul aapki pic jaisa --- */}
+            <style >{`
+                .custom-olx-scrollbar::-webkit-scrollbar {
+                    width: 12px; /* Thick scrollbar */
+                }
+                .custom-olx-scrollbar::-webkit-scrollbar-track {
+                    background: #f1f1f1;
+                }
+                .custom-olx-scrollbar::-webkit-scrollbar-thumb {
+                    background: #c1c1c1;
+                    border-radius: 10px;
+                    border: 3px solid #f1f1f1;
+                }
+                .custom-olx-scrollbar::-webkit-scrollbar-thumb:hover {
+                    background: #a8a8a8;
+                }
+            `}</style>
+        </div>
+    );
+}
+
+export default SignupModal;

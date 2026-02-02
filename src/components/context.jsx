@@ -1,21 +1,4 @@
-// import { createContext, useState } from "react";
 
-// export const CateogaryContext=createContext()
-
-// export const CateogaryProvider=({children})=>{
-
-// const [CategoriesImage,setCategoriesImage]=useState(null)
-
-// return(
-//     <CateogaryContext value={{
-//         CategoriesImage,setCategoriesImage
-//     }}>
-//     {children}
-//     </CateogaryContext>
-// )
-
-
-// }
 import { createContext, useState, useEffect } from "react";
 
 export const CateogaryContext = createContext(null);

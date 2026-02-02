@@ -14,3 +14,33 @@
   overflow: hidden; /* Zaroori, taaki currency list bahar na dikhe */
   white-space: nowrap; /* Zaroori, taaki currency list ek hi line mein rahe */
 }
+/* global.css یا index.css میں یہ CSS شامل کریں */
+.gradient-border {
+  position: relative;
+  background: white;
+  border-radius: 9999px;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(135deg, #23E5DB 0%, #FFCE32 50%, #3A77FF 100%);
+  border-radius: 9999px;
+  z-index: -1;
+}
+
+.gradient-border::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  border-radius: 9999px;
+  z-index: -1;
+}
