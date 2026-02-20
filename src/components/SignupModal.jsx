@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { XMarkIcon, ChevronLeftIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, ChevronLeftIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router';
 import { auth, createUserWithEmailAndPassword } from './firebaseconfig/index.jsx';
 
@@ -9,6 +9,7 @@ function SignupModal() {
     const [email, setEmail] = useState("");
     const [phoneNumber, setphoneNumber] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleClose = () => navigate('/home');
     
@@ -22,8 +23,8 @@ function SignupModal() {
             .then((userCredential) => {
                 const user = userCredential.user;
                 console.log(user, "user has been saved on firebase");
-navigate('/', { replace: true });            }) 
-            
+                navigate('/', { replace: true });
+            }) 
             .catch((error) => {
                 console.error("Error code:", error.code);
                 alert(error.message);
@@ -33,7 +34,7 @@ navigate('/', { replace: true });            })
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-[2px] font-sans p-4">
 
-            {/* --- MAIN CONTAINER: Width increased to 450px to match Login --- */}
+            {/* --- MAIN CONTAINER --- */}
             <div className="relative w-full max-w-[450px] bg-white rounded-md shadow-xl flex flex-col h-[530px] overflow-hidden transition-all">
 
                 {/* --- FIXED HEADER --- */}
@@ -53,7 +54,7 @@ navigate('/', { replace: true });            })
                     </button>
                 </div>
 
-                {/* --- SCROLLABLE BODY: With 12px Thick Scrollbar --- */}
+                {/* --- SCROLLABLE BODY --- */}
                 <div className="flex-grow overflow-y-scroll px-10 custom-olx-scrollbar">
 
                     {/* STEP 1: INITIAL JOIN OPTIONS */}
@@ -125,12 +126,35 @@ navigate('/', { replace: true });            })
                         </div>
                     )}
 
-                    {/* STEP 3: PASSWORD */}
+                    {/* STEP 3: PASSWORD (SINGLE BLOCK FIXED) */}
                     {step === 3 && (
                         <div className="flex flex-col animate-in slide-in-from-right duration-300">
                             <h2 className="text-center text-[24px] font-bold text-[#002f34] mb-8">Create a password</h2>
-                            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-4 border border-gray-300 rounded mb-6 outline-none focus:border-[#002f34] text-lg" placeholder="Password" />
-                            <button onClick={handleSubmit} className="w-full bg-[#002f34] text-white py-4 rounded font-bold text-lg hover:bg-[#003d45]">Agree and Create Account</button>
+
+                            <div className="relative mb-6">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full p-4 pr-12 border border-gray-300 rounded outline-none focus:border-[#002f34] text-lg"
+                                    placeholder="Password"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#002f34] cursor-pointer"
+                                >
+                                    {showPassword ? (
+                                        <EyeSlashIcon className="h-6 w-6 stroke-2" />
+                                    ) : (
+                                        <EyeIcon className="h-6 w-6 stroke-2" />
+                                    )}
+                                </button>
+                            </div>
+
+                            <button onClick={handleSubmit} className="w-full bg-[#002f34] text-white py-4 rounded font-bold text-lg hover:bg-[#003d45] transition-colors">
+                                Agree and Create Account
+                            </button>
                         </div>
                     )}
 
@@ -150,7 +174,7 @@ navigate('/', { replace: true });            })
                 </div>
             </div>
 
-            {/* --- MOTA SCROLLBAR CSS --- */}
+            {/* --- SCROLLBAR CSS --- */}
             <style>{`
                 .custom-olx-scrollbar::-webkit-scrollbar { width: 12px; }
                 .custom-olx-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }

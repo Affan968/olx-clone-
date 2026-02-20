@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { XMarkIcon, ChevronLeftIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, ChevronLeftIcon,EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router';
 import { auth, signInWithEmailAndPassword } from './firebaseconfig/index.jsx';
-
 function LoginModal() {
     const navigate = useNavigate();
     const [step, setStep] = useState(1); 
@@ -10,7 +9,7 @@ function LoginModal() {
     const [password, setPassword] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [loading, setLoading] = useState(false);
-
+const [showPassword, setShowPassword] = useState(false);
     const handleClose = () => navigate('/');
 
     const PhoneSvg = () => (
@@ -108,10 +107,31 @@ navigate('/', { replace: true });            })
                                 <label className="block text-sm font-bold text-[#002f34] mb-2">Email address</label>
                                 <input disabled={loading} type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-4 border border-gray-300 rounded focus:border-[#002f34] outline-none text-lg" placeholder="Email" />
                             </div>
-                            <div className="mb-6">
-                                <label className="block text-sm font-bold text-[#002f34] mb-2">Password</label>
-                                <input disabled={loading} type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-4 border border-gray-300 rounded focus:border-[#002f34] outline-none text-lg" placeholder="Password" />
-                            </div>
+                           <div className="mb-6 relative"> 
+    <label className="block text-sm font-bold text-[#002f34] mb-2">Password</label>
+    <div className="relative">
+        <input 
+            disabled={loading} 
+            type={showPassword ? "text" : "password"} 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            className="w-full p-4 pr-12 border border-gray-300 rounded focus:border-[#002f34] outline-none text-lg" 
+            placeholder="Password" 
+        />
+        {/* Toggle Button */}
+        <button 
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#002f34] cursor-pointer"
+        >
+            {showPassword ? (
+                <EyeSlashIcon className="h-6 w-6 stroke-2" />
+            ) : (
+                <EyeIcon className="h-6 w-6 stroke-2" />
+            )}
+        </button>
+    </div>
+</div>
                             <button onClick={handleSubmitEmail} disabled={loading} className="w-full py-4 rounded font-bold text-white bg-[#002f34] text-lg hover:bg-[#003d45] transition-colors">
                                 {loading ? "Logging in..." : "Log In"}
                             </button>
