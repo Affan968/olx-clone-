@@ -22,8 +22,8 @@ function SignupModal() {
             .then((userCredential) => {
                 const user = userCredential.user;
                 console.log(user, "user has been saved on firebase");
-                navigate('/home'); 
-            })
+navigate('/', { replace: true });            }) 
+            
             .catch((error) => {
                 console.error("Error code:", error.code);
                 alert(error.message);
