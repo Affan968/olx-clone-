@@ -1,35 +1,37 @@
-import CurrencyExchangeBanner from './CurrencyExchangeBanner';
+import React from 'react';
 import HeroBanner from './HeroBanner';
 import Products from './Product';
 import Header from './Header';
+import CurrencyExchangeBanner from './CurrencyExchangeBanner';
 import { Outlet, useLocation } from 'react-router';
+import Footer from './footer';
 
 function Main() {
   const location = useLocation();
-  
-  // Check karo ke kya hum Home page par hain ya Detail page par
   const isHomePage = location.pathname === "/";
-  const isItemDetailPage = location.pathname.includes('/item/');
 
   return (
-    <div className="min-h-screen bg-gray-100 font-sans">
+    <div className="min-h-screen bg-[#f2f4f5] font-sans">
       <Header />
 
-      {/* 1. Sirf Home Page par Banner aur Products dikhao */}
-      {isHomePage && (
-        <>
-          <HeroBanner />
-          <CurrencyExchangeBanner />
-          <Products />
-        </>
-      )}
+      <main className="flex-1">
+        {isHomePage && (
+          <>
+            {/* HeroBanner top padding sambhale ga */}
+            <HeroBanner />
+            {/* Currency Banner (Animated) */}
+            <CurrencyExchangeBanner />
+            {/* Items/Ads */}
+            <Products />
+          </>
+        )}
 
-      {/* 2. Detail Page ya Login/Signup ke liye Outlet */}
-      <div className={!isHomePage ? "pt-5" : ""}>
-        <Outlet />
-      </div>
-
-      {/* 3. Footer (Optional agar tumhare paas hai) */}
+        {/* Padding ko mazeed kam kar diya hai taake banner upar jump kare */}
+        <div className={!isHomePage ? "pt-[70px] md:pt-[90px]" : ""}>
+          <Outlet />
+        </div>
+        <Footer/>
+      </main>
     </div>
   );
 }

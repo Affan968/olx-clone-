@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
-import { Link } from 'react-router'; // ✅ IMPORT LINK
-import { db } from './firebaseconfig'; // Ensure path is correct
+import { Link, useNavigate } from 'react-router'; 
+import { db } from './firebaseconfig'; 
 import { HeartIcon } from '@heroicons/react/24/outline';
 
 // Logo Imports
@@ -23,8 +23,8 @@ import kids from './logo/kids.png';
 function Products() {
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  // Category Data List
   const categories = [
     { id: 1, name: 'Mobiles', icon: mobile },
     { id: 2, name: 'Vehicles', icon: vechile },
@@ -42,11 +42,10 @@ function Products() {
     { id: 14, name: 'Kids', icon: kids }
   ];
 
-  // --- 1. FIREBASE SE DATA FETCH KARNA ---
   useEffect(() => {
     const getAdsFromFirebase = async () => {
       try {
-        // Hum "olxUseradd" collection use kar rahe hain jisme humne data save kiya tha
+        setLoading(true);
         const querySnapshot = await getDocs(collection(db, "olxUseradd"));
         const adsArray = querySnapshot.docs.map(doc => ({
           id: doc.id,
@@ -56,50 +55,51 @@ function Products() {
       } catch (error) {
         console.error("Error fetching ads:", error);
       } finally {
-        setLoading(false);
+        // Smooth feel ke liye loading
+        setTimeout(() => setLoading(false), 800);
       }
     };
-
     getAdsFromFirebase();
   }, []);
 
-  // Function to format date
   const formatDate = (date) => {
-    if (!date) return "Recently";
-    
-    if (date.toDate) {
-      const firebaseDate = date.toDate();
-      const now = new Date();
-      const diffMs = now - firebaseDate;
-      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      
-      if (diffDays === 0) return "Today";
-      if (diffDays === 1) return "Yesterday";
-      if (diffDays < 7) return `${diffDays} days ago`;
-      if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-      return `${Math.floor(diffDays / 30)} months ago`;
-    }
-    
-    return "Recently";
+    if (!date?.toDate) return "Recently";
+    const firebaseDate = date.toDate();
+    const diffDays = Math.floor((new Date() - firebaseDate) / (1000 * 60 * 60 * 24));
+    if (diffDays === 0) return "Today";
+    if (diffDays === 1) return "Yesterday";
+    return `${diffDays} days ago`;
   };
+
+  // --- SKELETON CARD (Exact Layout Match) ---
+  const SkeletonCard = () => (
+    <div className="border border-gray-300 rounded overflow-hidden bg-white animate-pulse">
+      <div className="h-48 w-full bg-gray-200"></div>
+      <div className="p-3 border-l-4 border-l-gray-100">
+        <div className="h-6 bg-gray-200 rounded w-1/2 mb-2"></div>
+        <div className="h-4 bg-gray-100 rounded w-full mb-4"></div>
+        <div className="flex justify-between items-end mt-4">
+          <div className="h-3 bg-gray-100 rounded w-1/3"></div>
+          <div className="h-3 bg-gray-100 rounded w-1/4"></div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="container mx-auto px-4 sm:px-18 py-8">
 
-      {/* --- SECTION 1: CATEGORY GRID --- */}
+      {/* SECTION 1: CATEGORY GRID */}
       <div className="flex justify-center mb-8">
-        <div className="flex flex-wrap justify-start mx- gap-y-7 gap-x-17 max-w-10xl">
+        <div className="flex flex-wrap justify-start gap-y-7 gap-x-12 max-w-10xl">
           {categories.map((category) => (
             <div
               key={category.id}
+              onClick={() => navigate(`/category/${category.name.toUpperCase()}`)}
               className="w-[80px] sm:w-[90px] text-center cursor-pointer p-1 hover:bg-gray-100 rounded transition duration-200"
             >
               <div className="bg-[#F2F4F5] rounded-lg shadow-sm w-16 h-20 sm:w-20 sm:h-24 flex items-center justify-center mx-auto mb-1">
-                <img
-                  src={category.icon}
-                  alt={category.name}
-                  className="w-20 h-20 object-contain"
-                />
+                <img src={category.icon} alt={category.name} className="w-20 h-20 object-contain" />
               </div>
               <p className="text-xs font-medium text-gray-700 leading-tight">
                 {category.name}
@@ -111,87 +111,38 @@ function Products() {
 
       <h2 className="text-2xl font-bold mt-12 mb-6 text-[#002f34]">Fresh Recommendations</h2>
 
-      {/* --- SECTION 2: PRODUCT GRID (MAP HERE) --- */}
-      {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#002f34]"></div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {ads.map((ad) => (
-            <Link 
-              key={ad.id} 
-              to={`/item/${ad.id}`} // ✅ LINK TO ITEM DETAIL PAGE
-              className="block"
-            >
-              <div className="border border-gray-300 rounded overflow-hidden bg-white cursor-pointer hover:shadow-md transition-all duration-300 relative group">
-                {/* Image Section */}
+      {/* SECTION 2: PRODUCT GRID WITH SKELETON */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {loading ? (
+          // Exact number of cards for a full row on desktop
+          Array(8).fill(0).map((_, index) => <SkeletonCard key={index} />)
+        ) : (
+          ads.map((ad) => (
+            <Link key={ad.id} to={`/item/${ad.id}`} className="block">
+              <div className="border border-gray-300 rounded overflow-hidden bg-white hover:shadow-md transition-all duration-300 relative group h-full">
                 <div className="h-48 w-full bg-gray-100 overflow-hidden">
-                  {ad.adImages && ad.adImages[0] ? (
-                    <img 
-                      src={ad.adImages[0]} 
-                      alt={ad.adTitle} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                      <div className="text-gray-400 text-center">
-                        <div className="text-4xl mb-2">📱</div>
-                        <p className="text-sm">No Image</p>
-                      </div>
-                    </div>
-                  )}
+                  <img 
+                    src={ad.adImages?.[0] || ""} 
+                    alt={ad.adTitle} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-all" 
+                  />
                 </div>
-
-                {/* Heart Icon (Like Button) */}
-                <button 
-                  className="absolute top-3 right-3 p-1.5 bg-white/90 rounded-full hover:bg-white shadow-md hover:shadow-lg transition-all z-10"
-                  onClick={(e) => {
-                    e.preventDefault(); // Prevent link navigation
-                    e.stopPropagation();
-                    // Handle like functionality here
-                  }}
-                >
-                  <HeartIcon className="h-5 w-5 text-gray-700 hover:text-red-500" />
-                </button>
-
-                {/* Product Info Section */}
                 <div className="p-3 border-l-4 border-l-[#ffce32]">
-                  <h3 className="font-bold text-lg text-[#002f34]">
-                    Rs {parseInt(ad.adPrice).toLocaleString()}
-                  </h3>
-                  
-                  <p className="text-sm text-gray-600 line-clamp-1 mb-2 capitalize">
-                    {ad.adTitle || "Untitled Ad"}
-                  </p>
-
-                  <div className="flex justify-between items-end mt-4">
-                    <span className="text-[10px] text-gray-500 uppercase font-medium truncate max-w-[120px] flex items-center">
-                      <svg className="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      {ad.adLocation || "Pakistan"}
-                    </span>
-                    <span className="text-[10px] text-gray-500 whitespace-nowrap">
-                      {formatDate(ad.createdAt)}
-                    </span>
+                  <div className="flex justify-between items-start">
+                    <h3 className="font-bold text-lg text-[#002f34]">Rs {Number(ad.adPrice).toLocaleString()}</h3>
+                    <HeartIcon className="h-5 w-5 text-gray-400 hover:text-red-500 transition-colors" />
+                  </div>
+                  <p className="text-sm text-gray-600 line-clamp-1 mb-2 capitalize">{ad.adTitle}</p>
+                  <div className="flex justify-between items-end mt-4 text-[10px] text-gray-500">
+                    <span className="truncate max-w-[60%]">{ad.adLocation}</span>
+                    <span>{formatDate(ad.createdAt)}</span>
                   </div>
                 </div>
               </div>
             </Link>
-          ))}
-        </div>
-      )}
-
-      {/* Empty State */}
-      {!loading && ads.length === 0 && (
-        <div className="text-center py-20 border-2 border-dashed rounded-lg">
-          <p className="text-gray-500">No ads available right now.</p>
-          <p className="text-sm text-gray-400 mt-2">Be the first to post an ad!</p>
-        </div>
-      )}
-
+          ))
+        )}
+      </div>
     </div>
   );
 }
