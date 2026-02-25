@@ -19,7 +19,6 @@ const ImageZoomModal = ({ images, currentIndex, onClose, onNext, onPrev }) => {
   return (
     <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center" onClick={onClose}>
       <div className="relative w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
-        {/* Close button */}
         <button 
           onClick={onClose}
           className="absolute top-6 right-6 text-white bg-black/50 hover:bg-black/70 rounded-full p-3 z-10 transition-colors"
@@ -29,7 +28,6 @@ const ImageZoomModal = ({ images, currentIndex, onClose, onNext, onPrev }) => {
           </svg>
         </button>
         
-        {/* Navigation buttons */}
         {images.length > 1 && (
           <>
             <button 
@@ -47,12 +45,10 @@ const ImageZoomModal = ({ images, currentIndex, onClose, onNext, onPrev }) => {
           </>
         )}
         
-        {/* Image counter */}
         <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm font-bold">
           {currentIndex + 1} / {images.length}
         </div>
         
-        {/* Main image */}
         <img 
           src={images[currentIndex]} 
           className="max-h-[90vh] max-w-[90vw] object-contain" 
@@ -105,8 +101,11 @@ function ItemDetail() {
           setItem(data);
           fetchRelatedAds(data.adCategory, id);
         }
-      } catch (error) { console.error("Error:", error); } 
-      finally { setLoading(false); }
+      } catch (error) { 
+        console.error("Error:", error); 
+      } finally { 
+        setLoading(false); 
+      }
     };
     if (id) getItemDetail();
   }, [id]);
@@ -124,7 +123,9 @@ function ItemDetail() {
         if (doc.id !== currentId) ads.push({ id: doc.id, ...doc.data() });
       });
       setRelatedAds(ads);
-    } catch (error) { console.error(error); }
+    } catch (error) { 
+      console.error(error); 
+    }
   };
 
   const nextImage = () => { 
@@ -149,7 +150,6 @@ function ItemDetail() {
     if (!user) return navigate('/login');
     const sellerId = item?.uid || item?.userId || item?.userUid;
     
-    // Don't allow chatting with yourself
     if (user.uid === sellerId) {
       alert("You cannot chat with yourself!");
       return;
@@ -225,7 +225,7 @@ function ItemDetail() {
             {/* LEFT COLUMN - Main Content */}
             <div className="lg:w-2/3 space-y-4">
               
-              {/* IMAGE SLIDER - With Click to Zoom */}
+              {/* IMAGE SLIDER */}
               <div className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 relative group">
                 <div className="bg-[#f7f8f8] flex justify-center items-center h-[500px] relative">
                   {item.adImages?.length > 1 && (
@@ -252,7 +252,6 @@ function ItemDetail() {
                     onClick={handleImageClick}
                   />
                   
-                  {/* Zoom indicator */}
                   <div className="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1.5 rounded-full text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" onClick={handleImageClick}>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
@@ -260,7 +259,6 @@ function ItemDetail() {
                     Click to zoom
                   </div>
                   
-                  {/* Image Counter */}
                   <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1.5 rounded-full text-sm font-bold">
                     {activeImg + 1} / {item.adImages?.length || 1}
                   </div>
@@ -379,14 +377,6 @@ function ItemDetail() {
                 </div>
               </div>
 
-              {/* LOCATION MAP */}
-              {/* <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                <h3 className="text-[20px] font-bold text-[#002f34] mb-4">Location</h3>
-                <div className="bg-gray-100 h-48 rounded-lg flex items-center justify-center">
-                  <p className="text-gray-500">📍 {item.adLocation || "Pakistan"}</p>
-                </div>
-              </div> */}
-
               {/* RELATED ADS */}
               {relatedAds.length > 0 && (
                 <div className="pt-4">
@@ -426,85 +416,80 @@ function ItemDetail() {
             </div>
 
             {/* RIGHT COLUMN - Seller Info & Actions */}
-        {/* RIGHT COLUMN - Seller Info & Actions */}
-<div className="lg:w-1/3 space-y-4">
-  
-  {/* SELLER CARD - With OLX Original Profile Icon */}
-  <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm sticky top-4">
-    <div className="flex items-center gap-4 mb-6">
-      {/* OLX Original Profile Icon - Exactly as you requested */}
- <img 
-  src="/logo/iconProfilePicture_noinline.6327fd8895807f09fafb0ad1e3d99b83.svg" 
-  alt="profile"
-  className="w-16 h-16 rounded-full"
-  onError={(e) => {
-    console.log("Image load failed", e);
-    e.target.src = "https://www.olx.com.pk/assets/iconProfilePicture_noinline.6327fd8895807f09fafb0ad1e3d99b83.svg"; // fallback URL
-  }}
-/>
-      <div>
-        <div className="flex items-center gap-1">
-          <p className="text-xl font-bold text-[#002f34]">{item?.sellerName || "OLX User"}</p>
-        </div>
-        <p className="text-[13px] text-gray-500 flex items-center gap-1">
-          <ClockIcon className="h-3 w-3" /> Member since 2024
-        </p>
-      </div>
-    </div>
-    
-    <div className="space-y-3">
-      <button 
-        onClick={() => setShowNumber(!showNumber)} 
-        className="w-full bg-[#002f34] text-white font-bold py-4 rounded-lg flex items-center justify-center gap-3 hover:bg-[#001e22] transition-colors cursor-pointer text-base"
-      >
-        <PhoneIcon className="h-5 w-5" /> 
-        {showNumber ? (item?.adPhone || "Not Available") : "Show phone number"}
-      </button>
-      
-      <button 
-        onClick={handleChatStart} 
-        className="w-full border-2 border-[#002f34] text-[#002f34] font-bold py-4 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors cursor-pointer text-base"
-      >
-        <ChatBubbleLeftEllipsisIcon className="h-5 w-5" /> 
-        Chat with seller
-      </button>
-    </div>
-  </div>
+            <div className="lg:w-1/3 space-y-4">
+              
+              {/* SELLER CARD */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm sticky top-4">
+                <div className="flex items-center gap-4 mb-6">
+                  {/* Direct URL use karo - ye 100% kaam karega */}
+                  <img 
+                    src="https://www.olx.com.pk/assets/iconProfilePicture_noinline.6327fd8895807f09fafb0ad1e3d99b83.svg" 
+                    alt="profile"
+                    className="w-16 h-16 rounded-full"
+                  />
+                  <div>
+                    <div className="flex items-center gap-1">
+                      <p className="text-xl font-bold text-[#002f34]">{item?.sellerName || "OLX User"}</p>
+                    </div>
+                    <p className="text-[13px] text-gray-500 flex items-center gap-1">
+                      <ClockIcon className="h-3 w-3" /> Member since 2024
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <button 
+                    onClick={() => setShowNumber(!showNumber)} 
+                    className="w-full bg-[#002f34] text-white font-bold py-4 rounded-lg flex items-center justify-center gap-3 hover:bg-[#001e22] transition-colors cursor-pointer text-base"
+                  >
+                    <PhoneIcon className="h-5 w-5" /> 
+                    {showNumber ? (item?.adPhone || "Not Available") : "Show phone number"}
+                  </button>
+                  
+                  <button 
+                    onClick={handleChatStart} 
+                    className="w-full border-2 border-[#002f34] text-[#002f34] font-bold py-4 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors cursor-pointer text-base"
+                  >
+                    <ChatBubbleLeftEllipsisIcon className="h-5 w-5" /> 
+                    Chat with seller
+                  </button>
+                </div>
+              </div>
 
-  {/* SAFETY TIPS */}
-  <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-    <h3 className="text-lg font-bold text-[#002f34] mb-5 text-center">Your safety matters!</h3>
-    <div className="flex flex-col items-center">
-      <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4">
-        <svg width="32" height="32" viewBox="0 0 1024 1024" className="text-[#3a77ff]">
-          <path fill="currentColor" d="M512 64L128 256v320c0 235.2 163.2 454.4 384 512 220.8-57.6 384-276.8 384-512V256L512 64zm0 832c-156.8-44.8-256-195.2-256-352V320l256-128 256 128v224c0 156.8-99.2 307.2-256 352z" />
-          <path fill="currentColor" d="M633.6 406.4l-160 160-70.4-70.4-44.8 44.8 115.2 115.2 204.8-204.8z" />
-        </svg>
-      </div>
-      <ul className="text-left text-[13px] text-[#002f34] space-y-3 w-full">
-        <li className="flex items-start gap-2">
-          <span className="text-green-600 font-bold">✓</span>
-          Pay after seeing the item
-        </li>
-        <li className="flex items-start gap-2">
-          <span className="text-green-600 font-bold">✓</span>
-          Check item before buying
-        </li>
-        <li className="flex items-start gap-2">
-          <span className="text-green-600 font-bold">✓</span>
-          Use OLX chat for safety
-        </li>
-      </ul>
-    </div>
-  </div>
-  
-  {/* REPORT AD */}
-  <div className="text-center">
-    <button className="text-sm text-gray-400 hover:text-gray-600">
-      Report this ad
-    </button>
-  </div>
-</div>
+              {/* SAFETY TIPS */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                <h3 className="text-lg font-bold text-[#002f34] mb-5 text-center">Your safety matters!</h3>
+                <div className="flex flex-col items-center">
+                  <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                    <svg width="32" height="32" viewBox="0 0 1024 1024" className="text-[#3a77ff]">
+                      <path fill="currentColor" d="M512 64L128 256v320c0 235.2 163.2 454.4 384 512 220.8-57.6 384-276.8 384-512V256L512 64zm0 832c-156.8-44.8-256-195.2-256-352V320l256-128 256 128v224c0 156.8-99.2 307.2-256 352z" />
+                      <path fill="currentColor" d="M633.6 406.4l-160 160-70.4-70.4-44.8 44.8 115.2 115.2 204.8-204.8z" />
+                    </svg>
+                  </div>
+                  <ul className="text-left text-[13px] text-[#002f34] space-y-3 w-full">
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-600 font-bold">✓</span>
+                      Pay after seeing the item
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-600 font-bold">✓</span>
+                      Check item before buying
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-600 font-bold">✓</span>
+                      Use OLX chat for safety
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              {/* REPORT AD */}
+              <div className="text-center">
+                <button className="text-sm text-gray-400 hover:text-gray-600">
+                  Report this ad
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

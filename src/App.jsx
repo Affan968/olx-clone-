@@ -14,6 +14,7 @@ import ChatPage from "./components/ChatPage.jsx";
 import MyChats from "./components/myChats.jsx";
 import Settings from "./Setting.jsx";
 import MyAds from "./components/Myads.jsx";
+import MyAdDetail from "./components/MyAdDetail.jsx";  // ✅ NAYA IMPORT
 
 function App() {
   return (
@@ -36,7 +37,7 @@ function App() {
             } 
           />
 
-          {/* ✅ MY ADS ROUTE: Jahan user ko apne ads ki list dikhegi aur Edit button hoga */}
+          {/* MY ADS ROUTE: List of user's ads */}
           <Route 
             path="my-ads" 
             element={
@@ -46,7 +47,17 @@ function App() {
             } 
           />
 
-          {/* ✅ MY CHATS ROUTES */}
+          {/* ✅ NEW ROUTE: My Ad Detail - without chat/phone/seller info */}
+          <Route 
+            path="my-ad/:id" 
+            element={
+              <ProtectedRoute>
+                <MyAdDetail />
+              </ProtectedRoute>
+            } 
+          />
+
+          {/* MY CHATS ROUTES */}
           <Route 
             path="my-chats" 
             element={
@@ -59,7 +70,7 @@ function App() {
           </Route>
         </Route>
 
-        {/* --- POST AD ROUTES --- */}
+        {/* POST AD ROUTES */}
         <Route 
           path="/post" 
           element={
@@ -78,8 +89,7 @@ function App() {
           } 
         />
 
-        {/* ✅ EDIT AD ROUTE: Ye same PostAttributes ko open karega lekin ID ke sath */}
-        {/* Is se interface wahi rahega jo post karte waqt tha */}
+        {/* EDIT AD ROUTE */}
         <Route 
           path="/edit-ad/:id" 
           element={
