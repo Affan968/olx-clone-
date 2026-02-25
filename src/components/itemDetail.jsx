@@ -17,11 +17,11 @@ const ImageZoomModal = ({ images, currentIndex, onClose, onNext, onPrev }) => {
   if (!images) return null;
   
   return (
-    <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center " onClick={onClose}>
       <div className="relative w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 text-white bg-black/50 hover:bg-black/70 rounded-full p-3 z-10 transition-colors"
+          className="absolute top-2 right-6 text-white bg-black/50 hover:bg-black/70 rounded-full p-3 z-10 transition-colors"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
