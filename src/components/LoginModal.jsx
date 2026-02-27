@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { XMarkIcon, ChevronLeftIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router';
-import { auth, signInWithEmailAndPassword } from './firebaseconfig/index.jsx';
+import { auth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from './firebaseconfig/index.jsx';
 // 1. SweetAlert2 Import karein
 import Swal from 'sweetalert2';
 
@@ -31,27 +31,18 @@ function LoginModal() {
         </svg>
     );
 
-const handleSubmitEmail = () => {
-    // Basic Validation
-    if (!email || !password) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Fields Required',
-            text: 'Please enter both email and password.',
-            confirmButtonColor: '#002f34'
-        });
-        return;
-    }
-
-    setLoading(true);
-    signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
+    const handleGoogleLogin = async () => {
+        setLoading(true);
+        const provider = new GoogleAuthProvider();
+        
+        try {
+            const result = await signInWithPopup(auth, provider);
             setLoading(false);
             
-            // Success Toast (English)
+            // Success Toast
             Swal.fire({
                 icon: 'success',
-                title: 'Signed in successfully',
+                title: 'Signed in successfully with Google',
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
@@ -60,32 +51,83 @@ const handleSubmitEmail = () => {
             });
 
             navigate('/', { replace: true });
-        })
-        .catch((error) => {
+        } catch (error) {
             setLoading(false);
             
-            // Firebase Error handling in English
-            let errorMessage = "An error occurred. Please try again.";
+            let errorMessage = "An error occurred with Google sign-in.";
             
-            if (error.code === 'auth/invalid-credential') {
-                errorMessage = "Invalid email or password. Please check your credentials.";
-            } else if (error.code === 'auth/user-not-found') {
-                errorMessage = "No account found with this email.";
-            } else if (error.code === 'auth/wrong-password') {
-                errorMessage = "Incorrect password.";
-            } else if (error.code === 'auth/too-many-requests') {
-                errorMessage = "Too many failed attempts. Please try again later.";
+            if (error.code === 'auth/popup-closed-by-user') {
+                errorMessage = "Sign-in popup was closed. Please try again.";
+            } else if (error.code === 'auth/cancelled-popup-request') {
+                errorMessage = "Sign-in was cancelled.";
+            } else if (error.code === 'auth/account-exists-with-different-credential') {
+                errorMessage = "An account already exists with the same email address but different sign-in credentials.";
             }
 
-            // SweetAlert Popup (English)
             Swal.fire({
                 icon: 'error',
-                title: 'Login Failed',
+                title: 'Google Login Failed',
                 text: errorMessage,
                 confirmButtonColor: '#002f34',
             });
-        });
-};
+        }
+    };
+
+    const handleSubmitEmail = () => {
+        // Basic Validation
+        if (!email || !password) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Fields Required',
+                text: 'Please enter both email and password.',
+                confirmButtonColor: '#002f34'
+            });
+            return;
+        }
+
+        setLoading(true);
+        signInWithEmailAndPassword(auth, email, password)
+            .then(() => {
+                setLoading(false);
+                
+                // Success Toast (English)
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Signed in successfully',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                });
+
+                navigate('/', { replace: true });
+            })
+            .catch((error) => {
+                setLoading(false);
+                
+                // Firebase Error handling in English
+                let errorMessage = "An error occurred. Please try again.";
+                
+                if (error.code === 'auth/invalid-credential') {
+                    errorMessage = "Invalid email or password. Please check your credentials.";
+                } else if (error.code === 'auth/user-not-found') {
+                    errorMessage = "No account found with this email.";
+                } else if (error.code === 'auth/wrong-password') {
+                    errorMessage = "Incorrect password.";
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorMessage = "Too many failed attempts. Please try again later.";
+                }
+
+                // SweetAlert Popup (English)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed',
+                    text: errorMessage,
+                    confirmButtonColor: '#002f34',
+                });
+            });
+    };
 
     return (
         <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/50 backdrop-blur-[2px] font-sans p-4">
@@ -116,9 +158,13 @@ const handleSubmitEmail = () => {
                             </div>
                             <h2 className="text-center text-[24px] font-bold text-[#002f34] mb-8 leading-tight">Login into your OLX account</h2>
                             <div className="space-y-3">
-                                <button className="w-full flex items-center border-[1px] border-[#002f34] py-3 px-5 rounded-md font-bold text-[#002f34] bg-white cursor-pointer hover:bg-gray-50 hover:ring-[2px] hover:ring-[#002f34] transition-all">
+                                <button 
+                                    onClick={handleGoogleLogin}
+                                    disabled={loading}
+                                    className="w-full flex items-center border-[1px] border-[#002f34] py-3 px-5 rounded-md font-bold text-[#002f34] bg-white cursor-pointer hover:bg-gray-50 hover:ring-[2px] hover:ring-[#002f34] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
                                     <img src="https://www.svgrepo.com/show/355037/google.svg" className="h-6 w-6" alt="google" />
-                                    <span className="flex-grow text-center text-[16px]">Login with Google</span>
+                                    <span className="flex-grow text-center text-[16px]">{loading ? "Processing..." : "Login with Google"}</span>
                                 </button>
                                 <button className="w-full flex items-center border-[1px] border-[#002f34] py-3 px-5 rounded-md font-bold text-[#002f34] bg-white cursor-pointer hover:bg-gray-50 hover:ring-[2px] hover:ring-[#002f34] transition-all">
                                     <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" className="h-6 w-6" alt="Facebook" />

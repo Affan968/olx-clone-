@@ -6,8 +6,8 @@ import {
   collection,
   addDoc,
   getDoc,
-  getDocs,    // ✅ Added for fetching multiple docs
-  query,      // ✅ Added for category filtering
+  getDocs,
+  query,
   where,
   orderBy,
   onSnapshot,
@@ -16,15 +16,19 @@ import {
   setDoc,
   updateDoc,
   increment,
-  limit        // ✅ Added for specific conditions
+  limit
 } from "firebase/firestore";
 
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
   onAuthStateChanged,
-  signOut, RecaptchaVerifier, signInWithPhoneNumber
+  signOut,
+  RecaptchaVerifier,
+  signInWithPhoneNumber
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -43,26 +47,32 @@ const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Exporting everything correctly
+// Exporting everything
 export {
   db,
   auth,
+  analytics,
   collection,
   addDoc,
   getDoc,
-  getDocs,    // Category filtering ke liye zaroori hai
-  query,      // Category filtering ke liye zaroori hai
-  where,      // Category filtering ke liye zaroori hai
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut, RecaptchaVerifier, signInWithPhoneNumber, orderBy,
+  getDocs,
+  query,
+  where,
+  orderBy,
   onSnapshot,
   serverTimestamp,
   doc,
   setDoc,
   updateDoc,
   increment,
-  limit
+  limit,
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signOut,
+  RecaptchaVerifier,
+  signInWithPhoneNumber
 };

@@ -9,7 +9,7 @@ import {
   ClockIcon
 } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
-import { db, doc, getDoc, serverTimestamp, setDoc, collection, query, where, getDocs, limit } from "./firebaseconfig/index.jsx";
+import { db, doc, getDoc, serverTimestamp, setDoc, collection, query, where, getDocs, limit } from "../components/firebaseconfig/index.jsx";
 import moment from "moment"; 
 
 // Image Zoom Modal Component
